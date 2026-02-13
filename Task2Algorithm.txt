@@ -1,0 +1,110 @@
+//Task 2, finalized and cleaned algorithm 
+
+GenerateFromDrawio(xmlFile, outputFolder): 
+    doc ← parseXML(xmlFile) //reads xml converting into a structured object, map, tree, …
+
+    root ← doc.mxfile.diagram.mxGraphModel.root //and shapes an arrows saved in root folder in mxfile> diagram < mxGraphModel<root
+
+    cells ← all mxCell elements under root //saving all mxCell which means the cell into data structures. Each cell is either a vertex(class), an edge(relationship arrow), or might be other things like labels & stuff
+
+    vertices ← empty list of mxCell for shapes
+    edges ← empty list of mxCell fro arrows
+
+//loop and store mxCell based on its value
+    for each cell in cells:
+        if cell.@vertex == "1": 
+            vertices.add(cell)
+        else if cell.@edge == "1": 
+            edges.add(cell)
+
+	
+
+	//creating empty maps for our ClassObj and EnumObj objects, maps cz we can have fast access
+    classById ← empty map (String → ClassObj)
+    enumsById ← empty map (String → EnumObj)
+
+//loop thru vertices which are shapes
+    for each v in vertices:
+	//style is like shape=wtv;color=8r9y4yr kinda, so we convert into a map of shape: “wtv”, color="8r9y4yr"
+        style ← parseStyle(v.@style) 
+        label ← extractLabel(v.@value)
+
+        kind ← classifyVertexByLegend(style, v) //circle for class, horizontal oval for child class, pentagon for enum
+
+	//check kind of shape
+        if kind == "ENUM":
+            e ← new EnumObj(label)  //create new enum object with that name
+            enumsById[v.@id] ← e //give it vertex id so arrows can reference it later
+        else if kind == "CLASS" or kind == "CHILD_CLASS":
+            c ← new ClassObj(label)
+            c.isChild ← (kind == "CHILD_CLASS") //if a child class, make it as child
+            classesById[v.@id] ← c
+        else:
+            continue
+
+
+
+    rawRelations ← empty list of RawRelation //save raw relation first then do numbers of it later
+
+    for each e in edges:
+        style ← parseStyle(e.@style) //parse style to read color
+
+        colorKind ← classifyEdgeColor(style) //decide the color to know type of arrow
+
+	//based on legends save values
+        if colorKind == "BLACK_INHERITANCE":
+            src ← classesById[e.@source]
+            trg ← classesById[e.@target]
+            rawRelations.add( RawRelation("INHERITANCE", src, trg, e) )
+
+        else if colorKind == "RED_ASSOCIATION":
+            a ← classesById[e.@source]
+            b ← classesById[e.@target]
+            rawRelations.add( RawRelation("ASSOCIATION", a, b, e) )
+
+        else if colorKind == "BLUE_COMPOSITION":
+            a ← classesById[e.@source]
+            b ← classesById[e.@target]
+            rawRelations.add( RawRelation("COMPOSITION", a, b, e) )
+
+        else:
+            continue
+
+//counting number of existing edges between same 2 classes ignoring direction per relationship arrow type
+//e.g. if A->B and B->A same color then unordered pair key is {A,B} with count 2
+    pairCounts ← countEdgesByTypeAndUnorderedPair(rawRelations)
+
+    finalRelations ← empty list of RelationObj //finalized relations and loop thru raw to save
+
+    for each r in rawRelations:
+        if r.type == "INHERITANCE":
+            finalRelations.add( RelationObj(“INHERITANCE", r.src, r.trg, "N/A") )
+
+        else: //association or composition 
+            key ← makeUnorderedPairKey(r.src, r.trg)
+            n ← pairCounts[(r.type, key)] //get num arrows of type connecting the pairs
+
+            multiplicity ← inferMultiplicityFromLegend(r.type, n) //get multiplicity from our legend if n=1 then 0..1, n=2 then 0..* FOR ASSOCIATION in red. And n=1 then 1, n=2 then 1..* for COMPOSITION in blue
+
+            finalRelations.add( RelationObj(r.type, r.src, r.trg, multiplicity) ) //save relation
+
+    for each rel in finalRelations:
+        if rel.type == "INHERITANCE":
+            rel.trg.superClass ← rel.src //set targt as child, src as parent
+        else if rel.type == "ASSOCIATION":
+            rel.src.addFieldReference(rel.trg, rel.multiplicity, "association") //make field and reference targeted class
+        else if rel.type == "COMPOSITION":
+            rel.src.addFieldReference(rel.trg, rel.multiplicity, "composition") //same
+
+    for each enumObj in enumsById.values:
+        enumObj.literals ← parseEnumLiterals(enumObj.name, vertices) //get literal of enum
+
+    for each classObj in classesById.values:
+        fileText ← renderClassJava(classObj) //convert class into java code using a template with class header, extends If superclass exists
+        writeFile(outputFolder, classObj.name + ".java", fileText) //write file
+
+    for each enumObj in enumsById.values:
+        fileText ← renderEnumJava(enumObj)
+        writeFile(outputFolder, enumObj.name + ".java", fileText)
+
+    return
