@@ -1,0 +1,86 @@
+// To parse the XML:
+DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+DocumentBuilder builder = factory.newDocumentBuilder();
+Document doc = builder.parse(new File("model.xml"));
+
+NodeList entityNodes = doc.getElementsByTagName("entity");
+NodeList enumNodes = doc.getElementsByTagName("enum");
+NodeList relNodes = doc.getElementsByTagName("relationship");
+
+
+// To generate the classes and subclasses:
+for (int i = 0; i < entityNodes.getLength(); i++) {
+    Element e = (Element) entityNodes.item(i);
+
+    String name = e.getAttribute("name");
+    String type = e.getAttribute("type");
+
+    if (type.equals("Parent")) {
+        generateClass(name);
+    }
+
+    if (type.equals("Child")) {
+        String parentId = e.getAttribute("parentId");
+        generateSubclass(name, parentId);
+    }
+}
+
+// To generate Enums:
+for (int i = 0; i < enumNodes.getLength(); i++) {
+    Element en = (Element) enumNodes.item(i);
+
+    String enumName = en.getAttribute("name");
+    NodeList items = en.getElementsByTagName("item");
+
+    List<String> values = new ArrayList<>();
+    for (int j = 0; j < items.getLength(); j++) {
+        values.add(items.item(j).getTextContent());
+    }
+
+    generateEnum(enumName, values);
+}
+
+// To generate the relationship fields:
+for (int i = 0; i < relNodes.getLength(); i++) {
+    Element r = (Element) relNodes.item(i);
+
+    String type = r.getAttribute("type");
+    String from = r.getAttribute("from");
+    String to = r.getAttribute("to");
+    String card = r.getAttribute("cardinality");
+
+    switch (type) {
+        case "Association":
+            addField(from, to, card);
+            break;
+
+        case "Composition":
+            addComposition(from, to, card);
+            break;
+
+        case "Inheritance":
+            // handled by subclass generation
+            break;
+    }
+}
+
+// To generate the helper methods
+void generateClass(String name) {
+    // writes a .java file with class declaration
+}
+
+void generateSubclass(String name, String parentId) {
+    // writes class X extends Parent
+}
+
+void generateEnum(String name, List<String> items) {
+    // writes enum file
+}
+
+void addField(String from, String to, String cardinality) {
+    // adds association field to class
+}
+
+void addComposition(String from, String to, String cardinality) {
+    // adds List<T> or single T depending on multiplicity
+}

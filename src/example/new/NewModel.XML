@@ -1,0 +1,9 @@
+<ModelDomain>
+    <Class id="8srTI4fvE5slOMyjKK4J-8" name="Garage" shape="Circle" />
+    <Class id="8srTI4fvE5slOMyjKK4J-11" name="Car" shape="Circle" />
+    <Class id="8srTI4fvE5slOMyjKK4J-10" name="Mechanic" shape="Circle" />
+
+    <Relationship type="Composition" from="8srTI4fvE5slOMyjKK4J-8" to="8srTI4fvE5slOMyjKK4J-11" color="Blue" count="2" cardinality="1..*" />
+
+    <Relationship type="Association" from="8srTI4fvE5slOMyjKK4J-10" to="8srTI4fvE5slOMyjKK4J-11" color="Red" count="2" cardinality="0..*" />
+</ModelDomain>

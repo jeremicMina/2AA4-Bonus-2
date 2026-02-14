@@ -1,0 +1,18 @@
+<ModelDomain>
+    <Class id="C1" name="Simple_Client_Code.Car" shape="Circle" />
+    <Class id="C2" name="Simple_Client_Code.Driver" shape="Circle" />
+    <Class id="C3" name="Simple_Client_Code.Wheels" shape="Circle" />
+
+    <ChildClass id="C4" name="Simple_Client_Code.Manual" extends="C1" shape="Oval" />
+    <ChildClass id="C5" name="Simple_Client_Code.Automatic" extends="C1" shape="Oval" />
+
+    <Enumeration name="Simple_Client_Code.Model" shape="Pentagon" linkedTo="C1">
+        <Value>TESLA</Value>
+        <Value>BMW</Value>
+        <Value>TOYOTA</Value>
+    </Enumeration>
+
+    <Relationship type="Association" from="C2" to="C1" color="Red" count="1" cardinality="0..1" />
+
+    <Relationship type="Composition" from="C1" to="C3" color="Blue" count="2" cardinality="1..*" />
+</ModelDomain>

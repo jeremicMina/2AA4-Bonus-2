@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 450">
+    <defs>
+        <marker id="arrowRed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="red" />
+        </marker>
+        <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="blue" />
+        </marker>
+        <marker id="arrowBlack" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+        </marker>
+    </defs>
+
+    <circle cx="100" cy="100" r="45" fill="none" stroke="black" stroke-width="2" />
+    <text x="75" y="105" font-family="Arial" font-size="12">Simple_Client_Code.Wheels</text>
+
+    <circle cx="350" cy="100" r="60" fill="none" stroke="black" stroke-width="2" />
+    <text x="335" y="105" font-family="Arial" font-size="14" font-weight="bold">Simple_Client_Code.Car</text>
+
+    <circle cx="600" cy="100" r="45" fill="none" stroke="black" stroke-width="2" />
+    <text x="580" y="105" font-family="Arial" font-size="12">Simple_Client_Code.Driver</text>
+
+    <rect x="180" y="220" width="120" height="60" rx="30" fill="none" stroke="black" stroke-width="2" />
+    <text x="215" y="255" font-family="Arial" font-size="12">Simple_Client_Code.Manual</text>
+
+    <rect x="400" y="220" width="120" height="60" rx="30" fill="none" stroke="black" stroke-width="2" />
+    <text x="425" y="255" font-family="Arial" font-size="12">Simple_Client_Code.Automatic</text>
+
+    <path d="M550 200 L650 200 L650 350 L600 420 L550 350 Z" fill="none" stroke="black" stroke-width="2" />
+    <text x="575" y="230" font-family="Arial" font-size="12" font-weight="bold">enum Simple_Client_Code.Model</text>
+    <text x="570" y="260" font-family="Arial" font-size="10">TESLA, BMW, TOYOTA</text>
+
+    <line x1="555" y1="100" x2="410" y2="100" stroke="red" stroke-width="2" marker-end="url(#arrowRed)" />
+
+    <path d="M290 85 L145 85" fill="none" stroke="blue" stroke-width="2" marker-end="url(#arrowBlue)" />
+    <path d="M145 115 L230 115 L230 100 L290 100" fill="none" stroke="blue" stroke-width="2" marker-end="url(#arrowBlue)" />
+
+    <path d="M240 220 L240 180 L350 180 L350 160" fill="none" stroke="black" stroke-width="1" marker-end="url(#arrowBlack)" />
+    <path d="M460 220 L460 180 L350 180" fill="none" stroke="black" stroke-width="1" />
+
+    <path d="M350 160 L350 420 L600 420" fill="none" stroke="red" stroke-width="1" />
+</svg>

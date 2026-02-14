@@ -1,0 +1,30 @@
+<model>
+
+    <!-- Parent Classes (Circles) -->
+    <entity id="1" name="Simple_Client_Code.Car" shape="Circle" type="Parent" />
+    <entity id="2" name="Simple_Client_Code.Wheels" shape="Circle" type="Parent" />
+    <entity id="3" name="Simple_Client_Code.Driver" shape="Circle" type="Parent" />
+
+    <!-- Child Classes (Horizontal Ovals) -->
+    <entity id="4" name="Simple_Client_Code.Manual" shape="Oval" type="Child" parentId="1" />
+    <entity id="5" name="Simple_Client_Code.Automatic" shape="Oval" type="Child" parentId="1" />
+
+    <!-- Enumeration (Pentagon) -->
+    <enum name="Simple_Client_Code.Model">
+        <item>TESLA</item>
+        <item>BMW</item>
+        <item>TOYOTA</item>
+    </enum>
+
+    <!-- Relationships -->
+    <!-- Red Arrow: Association Simple_Client_Code.Car → Simple_Client_Code.Driver -->
+    <relationship type="Association" from="1" to="3" color="Red" cardinality="0..1" />
+
+    <!-- Blue Arrows: Composition Simple_Client_Code.Car → Simple_Client_Code.Wheels -->
+    <relationship type="Composition" from="1" to="2" color="Blue" cardinality="1..*" />
+
+    <!-- Black Arrows: Inheritance Simple_Client_Code.Car → Simple_Client_Code.Manual/Simple_Client_Code.Automatic -->
+    <relationship type="Inheritance" from="1" to="4" color="Black" />
+    <relationship type="Inheritance" from="1" to="5" color="Black" />
+
+</model>

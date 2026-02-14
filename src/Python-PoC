@@ -1,0 +1,19 @@
+tree = parseXML("model.xml")
+
+for entity in tree.entities:
+    if entity.type == "Parent":
+        generateClass(entity.name)
+
+    if entity.type == "Child":
+        parent = entity.parentId
+        generateSubclass(entity.name, parent)
+
+for enum in tree.enums:
+    generateEnum(enum.name, enum.items)
+
+for rel in tree.relationships:
+    if rel.type == "Association":
+        addField(rel.from, rel.to, rel.cardinality)
+
+    if rel.type == "Composition":
+        addComposition(rel.from, rel.to, rel.cardinality)
